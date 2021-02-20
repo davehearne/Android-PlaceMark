@@ -25,7 +25,7 @@ class PlacemarkListActivity : AppCompatActivity() {
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = PlacemarkAdapter(app.placemarks)
 
-        new_toolbar.title = title
+        //new_toolbar.title = title
 //        setSupportActionBar(new_toolbar)
     }
 
