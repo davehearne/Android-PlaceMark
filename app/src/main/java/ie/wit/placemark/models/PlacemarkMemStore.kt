@@ -15,6 +15,7 @@ class PlacemarkMemStore : PlacemarkStore, AnkoLogger {
 
     override fun findAll(): List<PlacemarkModel> {
         return placemarks
+        logAll()
     }
 
     override fun create(placemark: PlacemarkModel) {

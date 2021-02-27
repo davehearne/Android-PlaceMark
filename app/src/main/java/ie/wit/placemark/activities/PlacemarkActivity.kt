@@ -21,11 +21,15 @@ class PlacemarkActivity : AppCompatActivity(), AnkoLogger {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_placemark)
         app = application as MainApp
+        //flag for edit
+        var edit:Boolean = false
 
         if (intent.hasExtra("placemark_edit")) {
+            edit = true
             placemark = intent.extras?.getParcelable<PlacemarkModel>("placemark_edit")!!
             placemarkTitle.setText(placemark.title)
             placemarkDescription.setText(placemark.description)
+            btnAdd.setText(R.string.save_placemark)
         }
 
         //toolbarAdd.title = title
@@ -34,14 +38,18 @@ class PlacemarkActivity : AppCompatActivity(), AnkoLogger {
         btnAdd.setOnClickListener() {
             placemark.title = placemarkTitle.text.toString()
             placemark.description = placemarkDescription.text.toString()
-            if (placemark.title.isNotEmpty()) {
-                app.placemarks.create(placemark.copy())
-                info("add Button Pressed: ${placemark}")
-                setResult(AppCompatActivity.RESULT_OK)
-                finish()
+            if (placemark.title.isEmpty()) {
+                toast(R.string.enter_placemark_title)
             } else {
-                toast("Please Enter a title")
+                if (edit) {
+                    app.placemarks.update(placemark.copy())
+                } else {
+                    app.placemarks.create(placemark.copy())
+                }
             }
+            info("add Button Pressed: $placemarkTitle")
+            setResult(AppCompatActivity.RESULT_OK)
+            finish()
         }
     }
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
