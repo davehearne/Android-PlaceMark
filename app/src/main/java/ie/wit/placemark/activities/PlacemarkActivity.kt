@@ -22,6 +22,12 @@ class PlacemarkActivity : AppCompatActivity(), AnkoLogger {
         setContentView(R.layout.activity_placemark)
         app = application as MainApp
 
+        if (intent.hasExtra("placemark_edit")) {
+            placemark = intent.extras?.getParcelable<PlacemarkModel>("placemark_edit")!!
+            placemarkTitle.setText(placemark.title)
+            placemarkDescription.setText(placemark.description)
+        }
+
         //toolbarAdd.title = title
         //setSupportActionBar(toolbarAdd)
 
@@ -29,11 +35,8 @@ class PlacemarkActivity : AppCompatActivity(), AnkoLogger {
             placemark.title = placemarkTitle.text.toString()
             placemark.description = placemarkDescription.text.toString()
             if (placemark.title.isNotEmpty()) {
-                app.placemarks.add(placemark.copy())
+                app.placemarks.create(placemark.copy())
                 info("add Button Pressed: ${placemark}")
-                for (i in app.placemarks.indices) {
-                    info("Placemark[$i]:${app.placemarks[i]}")
-                }
                 setResult(AppCompatActivity.RESULT_OK)
                 finish()
             } else {
