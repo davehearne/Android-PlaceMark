@@ -4,18 +4,20 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import ie.wit.placemark.R
 import ie.wit.placemark.main.MainApp
 import ie.wit.placemark.models.PlacemarkModel
 import kotlinx.android.synthetic.main.activity_placemark_list.*
-import kotlinx.android.synthetic.main.card_placemark.view.*
+import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.startActivityForResult
 
-class PlacemarkListActivity : AppCompatActivity() {
+class PlacemarkListActivity : AppCompatActivity(), PlacemarkListener {
 
     lateinit var app: MainApp
 
+    override fun onPlacemarkClick(placemark: PlacemarkModel) {
+        startActivityForResult(intentFor<PlacemarkActivity>().putExtra("placemark_edit", placemark), 0)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_placemark_list)
@@ -23,7 +25,7 @@ class PlacemarkListActivity : AppCompatActivity() {
 
         val layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
-        recyclerView.adapter = PlacemarkAdapter(app.placemarks)
+        recyclerView.adapter = PlacemarkAdapter(app.placemarks.findAll(), this)
 
         //new_toolbar.title = title
 //        setSupportActionBar(new_toolbar)
