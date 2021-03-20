@@ -10,4 +10,5 @@
     <color name="navy">#000080</color>
     <color name="colorAccent">#EDEDEDFF</color>
     <color name="colorPrimary">#FFBBAAFC </color>
+    <color name="colorRed">#FF0000 </color>
 </resources>

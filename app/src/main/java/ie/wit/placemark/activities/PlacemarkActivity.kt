@@ -1,10 +1,16 @@
 package ie.wit.placemark.activities
 
+import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.annotation.RequiresApi
 import ie.wit.placemark.R
+import ie.wit.placemark.helpers.readImage
+import ie.wit.placemark.helpers.readImageFromPath
+import ie.wit.placemark.helpers.showImagePicker
 import ie.wit.placemark.main.MainApp
 import ie.wit.placemark.models.PlacemarkModel
 import kotlinx.android.synthetic.main.activity_placemark.*
@@ -16,6 +22,7 @@ class PlacemarkActivity : AppCompatActivity(), AnkoLogger {
 
     var placemark = PlacemarkModel()
     lateinit var app : MainApp
+    val IMAGE_REQUEST = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +37,10 @@ class PlacemarkActivity : AppCompatActivity(), AnkoLogger {
             placemarkTitle.setText(placemark.title)
             placemarkDescription.setText(placemark.description)
             btnAdd.setText(R.string.save_placemark)
+            placemarkImage.setImageBitmap(readImageFromPath(this, placemark.image))
+            if (placemark.image != null) {
+                chooseImage.setText(R.string.change_placemark_image)
+            }
         }
 
         //toolbarAdd.title = title
@@ -51,6 +62,12 @@ class PlacemarkActivity : AppCompatActivity(), AnkoLogger {
             setResult(AppCompatActivity.RESULT_OK)
             finish()
         }
+        /**
+         * New event listener for Image button
+         */
+        chooseImage.setOnClickListener {
+            showImagePicker(this, IMAGE_REQUEST)
+        }
     }
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_add, menu)
@@ -63,5 +80,19 @@ class PlacemarkActivity : AppCompatActivity(), AnkoLogger {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.P)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            IMAGE_REQUEST -> {
+                if (data != null) {
+                    placemark.image = data.getData().toString()
+                    placemarkImage.setImageBitmap(readImage(this, resultCode, data))
+                    chooseImage.setText(R.string.change_placemark_image)
+                }
+            }
+        }
     }
 }
