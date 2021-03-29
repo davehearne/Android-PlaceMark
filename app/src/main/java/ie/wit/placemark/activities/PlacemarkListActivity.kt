@@ -24,16 +24,17 @@ class PlacemarkListActivity : AppCompatActivity(), PlacemarkListener {
         setContentView(R.layout.activity_placemark_list)
         app = application as MainApp
 
+        //layout and populate for display
         val layoutManager = LinearLayoutManager(this)
-        recyclerView.layoutManager = layoutManager
-        recyclerView.adapter = PlacemarkAdapter(app.placemarks.findAll(), this)
+        recyclerView.layoutManager = layoutManager   //recyclerView is a widget in activity_placemark_list.xml
+        loadPlacemarks()
 
-        //new_toolbar.title = title
+        new_toolbar.title = title
 //        setSupportActionBar(new_toolbar)
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         //recyclerView is a widget in activity_placemark_list.xml
-        recyclerView.adapter?.notifyDataSetChanged()
+        loadPlacemarks()
         super.onActivityResult(requestCode, resultCode, data)
     }
 
@@ -47,5 +48,13 @@ class PlacemarkListActivity : AppCompatActivity(), PlacemarkListener {
             R.id.item_add -> startActivityForResult<PlacemarkActivity>(0)
         }
         return super.onOptionsItemSelected(item)
+    }
+    private fun loadPlacemarks() {
+        showPlacemarks(app.placemarks.findAll())
+    }
+
+    fun showPlacemarks (placemarks: List<PlacemarkModel>) {
+        recyclerView.adapter = PlacemarkAdapter(placemarks, this)
+        recyclerView.adapter?.notifyDataSetChanged()
     }
 }
